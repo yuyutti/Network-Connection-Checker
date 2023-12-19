@@ -42,10 +42,9 @@ async function info() {
     $('#isp').text(ipInfo.isp || '-');
 }
 
-const ipv4 = 'your ipv4 address'
-const ipv6 = 'your ipv6 address'
-
 (async () => {
+    const ipv4 = 'your ipv4 address'
+    const ipv6 = 'your ipv6 address'
     const ipv4Promise = IPv4orIPv6_fetch(`http://${ipv4}:4000/api/get/ip`);
     const ipv6Promise = IPv4orIPv6_fetch(`http://[${ipv6}]:3000/api/get/ip`);
 
