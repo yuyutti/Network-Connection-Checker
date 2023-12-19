@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回線情報チェッカー</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">回線情報</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center" scope="col">接続タイプ</th>
+                    <th class="text-center" scope="col">状態</th>
+                    <th class="text-center" scope="col">IPアドレス</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>IPv4</td>
+                    <td id="ipv4-status">テスト中...</td>
+                    <td id="ipv4-address">-</td>
+                </tr>
+                <tr>
+                    <td>IPv6</td>
+                    <td id="ipv6-status">テスト中...</td>
+                    <td id="ipv6-address">-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="container">
+            <div class="row">
+                <!-- 左上のボックス -->
+                <div class="col-md-6 mb-4">
+                    <div class="border p-3">
+                        <p class="text-muted">IPv6/IPv4 接続状況</p>
+                        <h5 id="connection" class="text-success font-weight-bold"></h5>
+                    </div>
+                </div>
+        
+                <!-- 右上のボックス -->
+                <div class="col-md-6 mb-4">
+                    <div class="border p-3">
+                        <p class="text-muted">V6プラス通信</p>
+                        <h5 id="v6plus-status" class="text-success font-weight-bold"></h5>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="row">
+                <!-- 左下のボックス -->
+                <div class="col-md-6 mb-4">
+                    <div class="border p-3">
+                        <p class="text-muted">ISP</p>
+                        <h5 id="isp" class="font-weight-bold"></h5>
+                    </div>
+                </div>
+        
+                <!-- 右下のボックス -->
+                <div class="col-md-6 mb-4">
+                    <div class="border p-3">
+                        <p class="text-muted">事業者名</p>
+                        <h5 id="company-name" class="font-weight-bold"></h5>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="row">
+                <!-- 中央のボックス -->
+                <div class="col-md-12 mb-4">
+                    <div class="border p-3">
+                        <p class="text-muted">ホスト名</p>
+                        <h5 id="hostname" class="font-weight-bold"></h5>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="row">
+                <!-- 下の左ボックス -->
+                <div class="col-md-6 mb-4">
+                    <div class="border p-3">
+                        <p class="text-muted">地域/国名</p>
+                        <h5 class="font-weight-bold"><snap id="location"></snap> / <snap id="country"></snap></h5>
+                    </div>
+                </div>
+        
+                <!-- 下の右ボックス -->
+                <div class="col-md-6 mb-4">
+                    <div class="border p-3">
+                        <p class="text-muted">ASN</p>
+                        <h5 id="asn" class="font-weight-bold"></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
