@@ -2,6 +2,7 @@ const fs = require('fs').promises;
 const express = require('express');
 const cors = require('cors');
 const requestIp = require('request-ip');
+const cheerio = require('cheerio');
 require('dotenv').config()
 
 const ipv6_app = express();
@@ -47,7 +48,8 @@ ipv6_app.get('/api/get/ip', (req, res) => {
 
 ipv4_app.get('/api/get/ip', (req, res) => {
     const clientIp = req.clientIp;
-    res.json({ IPv4: clientIp });
+    const clientPort = req.socket.remotePort;
+    res.json({ IPv4: clientIp, port: clientPort});
 });
 
 // その他診断 // 
@@ -75,6 +77,48 @@ ipv6_app.post('/api/get/info', async(req,res) => {
         isp: ispName
     }
     res.json(data)
+})
+
+ipv6_app.post('/api/post/ocn', async(req,res) => {
+    const data = req.body
+    const response = await fetch('https://v6test.ocn.ne.jp/check', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: `ipv4=${encodeURIComponent(data.ipv4)}&ipv6=${encodeURIComponent(data.ipv6)}`
+    });
+    
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    
+    const ipv4Connection = $('.ipv4_btn').closest('tr').find('td').first().text().trim();
+    const ipv6Connection = $('.ipv6_btn').closest('tr').find('td').first().text().trim();
+
+    let ipv4Text;
+    if (ipv4Connection === 'PPPoE方式') {
+        ipv4Text = '<span class="text-success">OCN (PPPoE)</span>';
+    } else if (ipv4Connection === 'IPoE形式') {
+        ipv4Text = '<span class="text-success">OCNバーチャルコネクト (IPoE + IPv4 over IPv6)</span>';
+    } else {
+        ipv4Text = false;
+    }
+
+    let ipv6Text;
+    if (ipv6Connection === 'PPPoE方式') {
+        ipv6Text = '<span class="text-success">OCN (PPPoE)</span>';
+    } else if (ipv6Connection === 'IPoE形式') {
+        ipv6Text = '<span class="text-success">OCNバーチャルコネクト (IPoE)</span>';
+    } else {
+        ipv6Text = false;
+    }
+
+    const resData = {
+        IPv4: ipv4Text,
+        IPv6: ipv6Text
+    }
+
+    res.send(resData);
 })
 
 ipv6_app.listen(3000, '::', () => console.log(`IPv6 server running on port 3000`));

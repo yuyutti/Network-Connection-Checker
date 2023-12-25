@@ -34,18 +34,36 @@
         <div class="container">
             <div class="row">
                 <!-- 左上のボックス -->
-                <div class="col-md-6 mb-4">
-                    <div class="border p-3">
+                <div class="col-md-6 mb-4 d-flex">
+                    <div class="border p-3 w-100">
                         <p class="text-muted">IPv6/IPv4 接続状況</p>
-                        <h5 id="connection" class="text-success font-weight-bold"></h5>
+                        <h5 id="connection" class="font-weight-bold text-center">-</h5>
                     </div>
                 </div>
-        
+            
                 <!-- 右上のボックス -->
-                <div class="col-md-6 mb-4">
-                    <div class="border p-3">
-                        <p class="text-muted">V6プラス通信</p>
-                        <h5 id="v6plus-status" class="text-success font-weight-bold"></h5>
+                <div class="col-md-6 mb-4 d-flex">
+                    <div class="border p-3 w-100">
+                        <p class="text-muted">フレッツ網(NGN)への接続</p>
+                        <h5 id="ngn-status" class="font-weight-bold text-center">-</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- 左上のボックス -->
+                <div class="col-md-6 mb-4 d-flex">
+                    <div class="border p-3 w-100">
+                        <p class="text-muted">IPv4の通信技術</p>
+                        <h5 id="connect-status-ipv4" class="font-weight-bold text-center">-</h5>
+                    </div>
+                </div>
+            
+                <!-- 右上のボックス -->
+                <div class="col-md-6 mb-4 d-flex">
+                    <div class="border p-3 w-100">
+                        <p class="text-muted">IPv6の通信技術</p>
+                        <h5 id="connect-status-ipv6" class="font-weight-bold text-center">-</h5>
                     </div>
                 </div>
             </div>
@@ -72,7 +90,7 @@
                 <!-- 中央のボックス -->
                 <div class="col-md-12 mb-4">
                     <div class="border p-3">
-                        <p class="text-muted">ホスト名</p>
+                        <p class="text-muted">ホスト名(FQDN)</p>
                         <h5 id="hostname" class="font-weight-bold"></h5>
                     </div>
                 </div>
