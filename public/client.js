@@ -126,8 +126,8 @@ async function ocn() {
 
 
 (async () => {
-    const access_ipv4 = ''
-    const access_ipv6 = ''
+    const access_ipv4 = '106.185.148.112'
+    const access_ipv6 = '2400:8902::f03c:93ff:fec4:c489'
     const ipv4Promise = IPv4orIPv6_fetch(`http://${access_ipv4}:4000/api/get/ip`);
     const ipv6Promise = IPv4orIPv6_fetch(`http://[${access_ipv6}]:3000/api/get/ip`);
 
