@@ -36,12 +36,13 @@ app.get('/api/get/ip', (req, res) => {
     const isIPv6 = ipAddress.includes(':') && !isIPv4;
 
     const clientPort = req.socket.remotePort;
-
-    res.json({
+    const data = {
         IPv4: isIPv4 ? cleanIp : false,
         IPv6: isIPv6 ? ipAddress : false,
         clientPort: clientPort
-    });
+    }
+    console.log(data)
+    res.json(data);
 });
 
 // その他診断 // 
