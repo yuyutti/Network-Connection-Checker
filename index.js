@@ -47,8 +47,8 @@ app.get('/api/get/ip', (req, res) => {
 
 // その他診断 //
 
-app.post('/api/get/info', async(req,res) => {
-    const info = await fetch(`https://ipinfo.io/${req.body.ip}?token=${process.env.TOKEN}`);
+app.get('/api/get/info', async(req,res) => {
+    const info = await fetch(`https://ipinfo.io/${req.query.ip}?token=${process.env.TOKEN}`);
     const info_response = await info.json();
     const CountryName = await country(info_response.country);
     

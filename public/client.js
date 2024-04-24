@@ -26,7 +26,7 @@ async function getData(url, timeout = 1000) {
 
 async function info(ipv6Data) {
     info_flag = true
-    let ipInfo = await getData(`https://netcheck.srvr.asia/api/get/info`);
+    let ipInfo = await getData(`https://netcheck.srvr.asia/api/get/info?ip=${ip}`);
     ipInfo = await ipInfo.json();
     $('#ip').text(ip || '-');
     $('#country').text(ipInfo.Country.companyjp + '(' + ipv6Data.country_name + ')' || '-');
