@@ -41,16 +41,21 @@ async function info(ipv6Data) {
     const GetIPv4 = getData(`https://api.ipify.org?format=json`, 3000);
     const GetIPv6 = getData(`https://ipapi.co/json/`, 3000);
 
-    GetIPv4.then(ipv4Data => {
-        IPv4 = ipv4Data.ip
-        $('#ipv4-address').text(ipv4Data && ipv4Data.ip ? ipv4Data.ip : '-');
-        $('#ipv4-status').html(ipv4Data && ipv4Data.ip ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
-    });
+    const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    const ipv6Regex = /^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/;
 
+    GetIPv4.then(ipv4Data => {
+        IPv4 = ipv4Data.ip;
+        const isValidIPv4 = ipv4Regex.test(IPv4);
+        $('#ipv4-address').text(IPv4 ? IPv4 : '-');
+        $('#ipv4-status').html(isValidIPv4 ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
+    });
+    
     GetIPv6.then(ipv6Data => {
-        IPv6 = ipv6Data.ip
-        $('#ipv6-address').text(ipv6Data && ipv6Data.ip ? ipv6Data.ip : '-');
-        $('#ipv6-status').html(ipv6Data && ipv6Data.ip ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
+        IPv6 = ipv6Data.ip;
+        const isValidIPv6 = ipv6Regex.test(IPv6);
+        $('#ipv6-address').text(IPv6 ? IPv6 : '-');
+        $('#ipv6-status').html(isValidIPv6 ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
     });
 
     Promise.all([GetIPv4, GetIPv6]).then(results => {
