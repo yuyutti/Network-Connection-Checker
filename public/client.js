@@ -8,15 +8,22 @@ let res;
 
 let connect_status = {}
 
-async function getData(url, timeout = 1000) {
+async function getData(url, timeout = 1000, mode = 'cors', responseType = 'json') {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-        const response = await fetch(url, { signal: controller.signal });
+        const response = await fetch(url, { signal: controller.signal, mode: mode });
         if (!response.ok) throw new Error('Network response was not ok');
 
-        return await response.json();
+        switch (responseType) {
+            case 'text':
+                return await response.text();
+            case 'json':
+                return await response.json();
+            default:
+                throw new Error('Unsupported response type');
+        }
     } catch (error) {
         return false;
     } finally {
