@@ -45,7 +45,7 @@ app.get('/api/get/ip', (req, res) => {
     res.json(data);
 });
 
-// その他診断 // 
+// その他診断 //
 
 app.post('/api/get/info', async(req,res) => {
     const info = await fetch(`https://ipinfo.io/${req.body.ip}?token=${process.env.TOKEN}`);
@@ -72,7 +72,7 @@ app.post('/api/get/info', async(req,res) => {
     res.json(data)
 })
 
-app.post('/api/post/ocn', async(req,res) => {
+app.post('/api/get/ocn', async(req,res) => {
     const data = req.body
     const response = await fetch('https://v6test.ocn.ne.jp/check', {
         method: 'POST',

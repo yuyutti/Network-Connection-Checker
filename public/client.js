@@ -36,16 +36,16 @@ async function IpInfo(ip) {
     return res
 }
 
-async function info() {
+async function info(ipv6Data) {
     info_flag = true
     let ipInfo = await IpInfo(ip);
     ipInfo = await ipInfo.json();
     $('#ip').text(ip || '-');
-    $('#country').text(ipInfo.Country.companyjp || '-');
+    $('#country').text(ipv6Data.country_name || '-');
     $('#location').text(ipInfo.Country.location || '-');
     $('#hostname').text(ipInfo.hostname || '-');
-    $('#asn').text(ipInfo.asn || '-');
-    $('#company-name').text(ipInfo.companyName || '-');
+    $('#asn').text(ipv6Data.asn || '-');
+    $('#company-name').text(ipv6Data.org || '-');
     $('#isp').text(ipInfo.isp || '-');
 }
 
@@ -87,10 +87,11 @@ async function v6() {
     v6.id = 'v6plus'
     $('#v6plus').remove();
 }
+
 async function ocn() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     if (IPv4 !== undefined || IPv6 !== undefined) {
-        const response = await fetch('/api/post/ocn', {
+        const response = await fetch('/api/get/ocn', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -111,12 +112,12 @@ async function ocn() {
             connect_status.ocnIpv4 = true
             connect_status.ocn = true
         }
-        if (!data.IPv6) {
+        if (!data.ip) {
             connect_status.ocnIPv6 = false
             connect_status.ocn = false
         }
         else {
-            $('#connect-status-ipv6').html(data.IPv6);
+            $('#connect-status-ipv6').html(data.ip);
             connect_status.ocnIPv6 = true
             connect_status.ocn = true
         }
@@ -127,9 +128,8 @@ async function ocn() {
 
 (async () => {
     const access_ipv4 = '106.185.148.112'
-    const access_ipv6 = '240b:253:5660:9600:4c4a:c5ff:fe10:61f6'
     const ipv4Promise = IPv4orIPv6_fetch(`http://${access_ipv4}:4545/api/get/ip`);
-    const ipv6Promise = IPv4orIPv6_fetch(`http://[${access_ipv6}]:4545/api/get/ip`);
+    const ipv6Promise = IPv4orIPv6_fetch(`https://ipapi.co/json/`);
 
     ipv4Promise.then(ipv4Data => {
         IPv4 = ipv4Data.IPv4
@@ -138,21 +138,21 @@ async function ocn() {
     });
 
     ipv6Promise.then(ipv6Data => {
-        IPv6 = ipv6Data.IPv6
-        $('#ipv6-address').text(ipv6Data && ipv6Data.IPv6 ? ipv6Data.IPv6 : '-');
-        $('#ipv6-status').html(ipv6Data && ipv6Data.IPv6 ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
+        IPv6 = ipv6Data.ip
+        $('#ipv6-address').text(ipv6Data && ipv6Data.ip ? ipv6Data.ip : '-');
+        $('#ipv6-status').html(ipv6Data && ipv6Data.ip ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
     });
 
     Promise.all([ipv4Promise, ipv6Promise]).then(results => {
         const [ipv4Data, ipv6Data] = results;
-        ip = ipv4Data && ipv4Data.IPv4 ? ipv4Data.IPv4 : ipv6Data && ipv6Data.IPv6 ? ipv6Data.IPv6 : null;
-        if(ip) info()
+        ip = ipv4Data && ipv4Data.IPv4 ? ipv4Data.IPv4 : ipv6Data && ipv6Data.ip ? ipv6Data.ip : null;
+        if(ip) info(ipv6Data)
         let infoText = '<span class="text-danger">取得できませんでした</span>';
-        if (ipv4Data && ipv4Data.IPv4 && ipv6Data && ipv6Data.IPv6) {
+        if (ipv4Data && ipv4Data.IPv4 && ipv6Data && ipv6Data.ip) {
             infoText = '<span class="text-success">IPv4/IPv6の両方で通信しています</span>';
         } else if (ipv4Data && ipv4Data.IPv4) {
             infoText = '<span class="text-success">IPv4のみで通信しています</span>';
-        } else if (ipv6Data && ipv6Data.IPv6) {
+        } else if (ipv6Data && ipv6Data.ip) {
             infoText = '<span class="text-success">IPv6のみで通信しています</span>';
         }
         $('#connection').html(infoText);
@@ -165,13 +165,15 @@ async function ocn() {
         ? '<span class="text-success">〇 NTT 東西のNGNにアクセスできます</span>'
         : (west ? '<span class="text-success">〇 NTT 西日本</span>' : (east ? '<span class="text-success">〇 NTT 東日本</span>' : '<span class="text-danger">✕ NGN網に接続できませんでした</span>'));
     
-    $('#ngn-status').html(ngnProvider);
+        $('#ngn-status').html(ngnProvider);
     })
     .catch((error) => {
         console.error(error);
     });
+
     await v6();
     await ocn();
+
     const connect_status_flag = Object.values(connect_status).every(value => value === false);
     if (connect_status_flag) {
         $('#connect-status-ipv4').html('測定不可<br>全てのプロバイダーに対応しておりません');
