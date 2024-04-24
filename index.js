@@ -5,19 +5,13 @@ const requestIp = require('request-ip');
 const cheerio = require('cheerio');
 require('dotenv').config()
 
-const ipv6_app = express();
-const ipv4_app = express();
+const app = express();
 
-ipv6_app.use(express.json());
-ipv4_app.use(express.json());
-ipv6_app.use(express.urlencoded({ extended: true }));
-ipv4_app.use(express.urlencoded({ extended: true }));
-ipv6_app.use(cors());
-ipv4_app.use(cors());
-ipv6_app.use(express.static('public'));
-ipv4_app.use(express.static('public'));
-ipv6_app.use(requestIp.mw());
-ipv4_app.use(requestIp.mw());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.static('public'));
+app.use(requestIp.mw());
 
 let countriesData;
 
@@ -33,28 +27,26 @@ async function country(countryCode) {
 
 // IPv4 IPv6接続テスト //
 
-ipv6_app.get('/api/get/ip', (req, res) => {
-    const clientIp = req.clientIp;
+app.get('/api/get/ip', (req, res) => {
+    const ipAddress = req.socket.remoteAddress;
+    
+    const cleanIp = ipAddress.replace(/^.*:/, '');
 
-    const isIPv6 = clientIp.includes(':') && !clientIp.startsWith('::ffff:');
+    const isIPv4 = cleanIp.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/) != null;
+    const isIPv6 = ipAddress.includes(':') && !isIPv4;
 
-    if(isIPv6){
-        res.json({ IPv6: clientIp });
-    }
-    else{
-        res.json({ IPv6: false });
-    }
-});
-
-ipv4_app.get('/api/get/ip', (req, res) => {
-    const clientIp = req.clientIp;
     const clientPort = req.socket.remotePort;
-    res.json({ IPv4: clientIp, port: clientPort});
+
+    res.json({
+        IPv4: isIPv4 ? cleanIp : false,
+        IPv6: isIPv6 ? ipAddress : false,
+        clientPort: clientPort
+    });
 });
 
 // その他診断 // 
 
-ipv6_app.post('/api/get/info', async(req,res) => {
+app.post('/api/get/info', async(req,res) => {
     const info = await fetch(`https://ipinfo.io/${req.body.ip}?token=${process.env.TOKEN}`);
     const info_response = await info.json();
     const CountryName = await country(info_response.country);
@@ -79,7 +71,7 @@ ipv6_app.post('/api/get/info', async(req,res) => {
     res.json(data)
 })
 
-ipv6_app.post('/api/post/ocn', async(req,res) => {
+app.post('/api/post/ocn', async(req,res) => {
     const data = req.body
     const response = await fetch('https://v6test.ocn.ne.jp/check', {
         method: 'POST',
@@ -121,5 +113,4 @@ ipv6_app.post('/api/post/ocn', async(req,res) => {
     res.send(resData);
 })
 
-ipv6_app.listen(3000, '::', () => console.log(`IPv6 server running on port 3000`));
-ipv4_app.listen(4000, '0.0.0.0', () => console.log(`IPv4 server running on port 4000`));
+app.listen(4545, '::', () => console.log(`IPv6 server running on port 3000`));
