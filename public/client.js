@@ -38,8 +38,8 @@ async function info(ipv6Data) {
 
 
 (async () => {
-    const GetIPv4 = getData(`https://api.ipify.org?format=json`);
-    const GetIPv6 = getData(`https://ipapi.co/json/`);
+    const GetIPv4 = getData(`https://api.ipify.org?format=json`, 3000);
+    const GetIPv6 = getData(`https://ipapi.co/json/`, 3000);
 
     GetIPv4.then(ipv4Data => {
         IPv4 = ipv4Data.ip
