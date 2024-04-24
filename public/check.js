@@ -75,51 +75,31 @@ async function ocn() {
 }
 
 async function transix() {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    try {
-        const res = await fetch('https://gw.transix.jp/', { signal: controller.signal });
-        if (res.status !== 100) return connect_status.transix = false;
-        return connect_status.transix = true;
-    } catch (error) {
-        return connect_status.transix = false;
-    } finally {
-        clearTimeout(timeoutId);
-    }
+    const res = await getData('https://gw.transix.jp/', 2000);
+
+    if (res.status !== 200) return connect_status.transix = false;
+    $('#connect-status-ipv4').html('<span class="text-success">DS-Lite<br>(IPoE + IPv4 over IPv6)</span>');
+    $('#connect-status-ipv6').html('<span class="text-success">transix (IPoE)</span>');
+    return connect_status.transix = true;
 }
 
 async function xpass() {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    try {
-        const res = await fetch('https://dgw.xpass.jp/', { signal: controller.signal });
-        if (res.status !== 200) return connect_status.xpass = false;
-        return connect_status.xpass = true;
-    } catch (error) {
-        return connect_status.xpass = false;
-    } finally {
-        clearTimeout(timeoutId);
-    }
+    const res = await getData('https://dgw.xpass.jp/', 2000);
+
+    if (res.status !== 200) return connect_status.xpass = false;
+    $('#connect-status-ipv4').html('<span class="text-success">DS-Lite<br>(IPoE + IPv4 over IPv6)</span>');
+    $('#connect-status-ipv6').html('<span class="text-success">Xpass (IPoE)</span>');
+    return connect_status.xpass = true;
 }
 
 async function asahiNet() {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    try {
-        const res = await fetch('https://v6.asahi-net.jp/', { signal: controller.signal, mode: 'no-cors' });
-        if (!res.status === 200) return connect_status.asahiNet = null;
+    const res = await getData('https://v6.asahi-net.jp/', 2000);
 
-        // html内に「ASAHIネット以外」が含まれてるかどうか
-        const text = await res.text();
-        if (text.includes('ASAHIネット以外')) return connect_status.asahiNet = false;
-        return connect_status.asahiNet = true;
-    }
-    catch (error) {
-        return connect_status.asahiNet = false;
-    }
-    finally {
-        clearTimeout(timeoutId);
-    }
+    if (res.status !== 200) return connect_status.asahiNet = false;
+    if (res.includes('ASAHIネット以外')) return connect_status.asahiNet = false;
+    $('#connect-status-ipv4').html('<span class="text-success">DS-Lite<br>(IPoE + IPv4 over IPv6)</span>');
+    $('#connect-status-ipv6').html('<span class="text-success">AsahiNet IPv6接続<br>(IPoE)</span>');
+    return connect_status.asahiNet = true;
 }
 
 async function check() {

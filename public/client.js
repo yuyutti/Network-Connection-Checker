@@ -13,9 +13,11 @@ async function getData(url, timeout = 1000) {
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-        const response = await fetch(url, { signal: controller.signal });
+        const response = await fetch(url, { signal: controller.signal, mode: 'no-cors' });
         if (!response.ok) throw new Error('Network response was not ok');
-        return await response.json();
+
+        if (response.headers.get('content-type').includes('application/json')) return await response.json();
+        return await response.text();
     } catch (error) {
         return false;
     } finally {
@@ -98,7 +100,7 @@ async function info(ipv6Data) {
 
     const connect_status_flag = Object.values(connect_status).every(value => value === false);
     if (connect_status_flag) {
-        $('#connect-status-ipv4').html('測定不可<br>全てのプロバイダーに対応しておりません');
-        $('#connect-status-ipv6').html('測定不可<br>全てのプロバイダーに対応しておりません');
+        $('#connect-status-ipv4').html('IPv4接続<br>回線種別を特定できませんでした');
+        $('#connect-status-ipv6').html('IPv6接続<br>回線種別を特定できませんでした');
     }
 })();
