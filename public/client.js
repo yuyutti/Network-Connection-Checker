@@ -27,7 +27,6 @@ async function getData(url, timeout = 1000) {
 async function info(ipv6Data) {
     info_flag = true
     let ipInfo = await getData(`https://netcheck.srvr.asia/api/get/info?ip=${ip}`, 5000);
-    console.log(ipInfo)
     $('#ip').text(ip || '-');
     $('#country').text(ipInfo.Country.companyjp + '(' + ipv6Data.country_name + ')' || '-');
     $('#location').text(ipInfo.Country.location || '-');
@@ -82,8 +81,7 @@ async function info(ipv6Data) {
         console.error(error);
     });
 
-    await v6();
-    await ocn();
+    await check();
 
     const connect_status_flag = Object.values(connect_status).every(value => value === false);
     if (connect_status_flag) {
