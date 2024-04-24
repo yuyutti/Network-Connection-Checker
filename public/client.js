@@ -46,8 +46,8 @@ async function info(ipv6Data) {
     
     GetIPv4.then(ipv4Data => {
         IPv4 = ipv4Data.ip;
-        const isValidIPv4 = ipv4Regex.test(ipv4);
-        $('#ipv4-address').text(isValidIPv4 ? ipv4 : '-');
+        const isValidIPv4 = ipv4Regex.test(IPv4);
+        $('#ipv4-address').text(isValidIPv4 ? IPv4 : '-');
         $('#ipv4-status').html(isValidIPv4 ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
     }).catch(error => {
         console.error('Error fetching IPv4:', error);
@@ -57,8 +57,8 @@ async function info(ipv6Data) {
     
     GetIPv6.then(ipv6Data => {
         IPv6 = ipv6Data.ip;
-        const isValidIPv6 = ipv6Regex.test(ipv6);
-        $('#ipv6-address').text(isValidIPv6 ? ipv6 : '-');
+        const isValidIPv6 = ipv6Regex.test(IPv6);
+        $('#ipv6-address').text(isValidIPv6 ? IPv6 : '-');
         $('#ipv6-status').html(isValidIPv6 ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
     }).catch(error => {
         console.error('Error fetching IPv6:', error);
