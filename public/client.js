@@ -28,11 +28,12 @@ async function info(ipv6Data) {
     info_flag = true
     let ipInfo = await getData(`https://netcheck.srvr.asia/api/get/info?ip=${ip}`, 5000);
     ipInfo = await ipInfo.json();
+    console.log(ipInfo)
     $('#ip').text(ip || '-');
     $('#country').text(ipInfo.Country.companyjp + '(' + ipv6Data.country_name + ')' || '-');
     $('#location').text(ipInfo.Country.location || '-');
     $('#hostname').text(ipInfo.hostname || '-');
-    $('#asn').text(ipv6Data.asn || '-');
+    $('#asn').text(ipInfo.asn || '-');
     $('#company-name').text(ipv6Data.org || '-');
     $('#isp').text(ipInfo.isp || '-');
 }
