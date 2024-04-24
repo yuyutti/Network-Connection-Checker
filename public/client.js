@@ -8,7 +8,7 @@ let res;
 
 let connect_status = {}
 
-async function getData(url, timeout = 1000) {
+async function getData(url, timeout = 2000) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
