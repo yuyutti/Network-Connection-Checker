@@ -78,7 +78,7 @@ async function transix() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
     try {
-        const res = await fetch('http://gw.transix.jp/', { signal: controller.signal });
+        const res = await fetch('https://gw.transix.jp/', { signal: controller.signal });
         if (res.status !== 100) return connect_status.transix = false;
         return connect_status.transix = true;
     } catch (error) {
@@ -92,7 +92,7 @@ async function xpass() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
     try {
-        const res = await fetch('http://dgw.xpass.jp/', { signal: controller.signal });
+        const res = await fetch('https://dgw.xpass.jp/', { signal: controller.signal });
         if (res.status !== 200) return connect_status.xpass = false;
         return connect_status.xpass = true;
     } catch (error) {
@@ -131,6 +131,5 @@ async function check() {
         asahiNet()
     ];
     const results = await Promise.all(promises);
-    console.log(results);
     console.log(connect_status)
 }
