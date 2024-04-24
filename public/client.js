@@ -26,7 +26,7 @@ async function getData(url, timeout = 1000) {
 
 async function info(ipv6Data) {
     info_flag = true
-    let ipInfo = await IpInfo(ip);
+    let ipInfo = await getData('https://ipinfo.io/' + ip + '?token=' + process.env.TOKEN);
     ipInfo = await ipInfo.json();
     $('#ip').text(ip || '-');
     $('#country').text(ipInfo.Country.companyjp + '(' + ipv6Data.country_name + ')' || '-');
@@ -39,8 +39,8 @@ async function info(ipv6Data) {
 
 
 (async () => {
-    const GetIPv4 = IPfetch(`https://ipv4.iplocation.net/`);
-    const GetIPv6 = IPfetch(`https://ipapi.co/json/`);
+    const GetIPv4 = getData(`https://ipv4.iplocation.net/`);
+    const GetIPv6 = getData(`https://ipapi.co/json/`);
 
     GetIPv4.then(ipv4Data => {
         IPv4 = ipv4Data.ip
