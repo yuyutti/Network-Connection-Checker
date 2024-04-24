@@ -41,7 +41,7 @@ async function info(ipv6Data) {
     let ipInfo = await IpInfo(ip);
     ipInfo = await ipInfo.json();
     $('#ip').text(ip || '-');
-    $('#country').text(ipv6Data.country_name || '-');
+    $('#country').text(ipInfo.Country.companyjp || '-');
     $('#location').text(ipInfo.Country.location || '-');
     $('#hostname').text(ipInfo.hostname || '-');
     $('#asn').text(ipv6Data.asn || '-');
