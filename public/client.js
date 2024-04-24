@@ -38,7 +38,7 @@ async function info(ipv6Data) {
 
 
 (async () => {
-    const GetIPv4 = getData(`https://ipv4.iplocation.net/`);
+    const GetIPv4 = getData(`https://api.ipify.org?format=json`);
     const GetIPv6 = getData(`https://ipapi.co/json/`);
 
     GetIPv4.then(ipv4Data => {
