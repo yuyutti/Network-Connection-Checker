@@ -8,7 +8,7 @@ let res;
 
 let connect_status = {}
 
-async function IPv4orIPv6_fetch(url, timeout = 1000) {
+async function getData(url, timeout = 1000) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -23,18 +23,6 @@ async function IPv4orIPv6_fetch(url, timeout = 1000) {
     }
 }
 
-async function IpInfo(ip) {
-    const res = await fetch('/api/get/info', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            ip: ip
-        })
-    })
-    return res
-}
 
 async function info(ipv6Data) {
     info_flag = true
@@ -49,108 +37,31 @@ async function info(ipv6Data) {
     $('#isp').text(ipInfo.isp || '-');
 }
 
-function NGNCheck(url, id) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => {
-            clearTimeout(timeout);
-            $(`#${id}`).remove();
-            resolve(true);
-        };
-        img.onerror = () => {
-            resolve(false);
-        };
-        img.src = url;
-        img.style.display = 'none';
-        img.id = id;
-
-        const timeout = setTimeout(() => {
-            img.src = '';
-            $(`#${id}`).remove();
-            resolve(false);
-        }, 1000);
-
-        document.body.appendChild(img);
-    });
-}
-
-async function v6() {
-    const v6 = new Image();
-    v6.onload = () => {
-        $('#connect-status-ipv4').html('<span class="text-success">V6プラス<br>(IPoE + IPv4 over IPv6)</span>');
-        $('#connect-status-ipv6').html('<span class="text-success">V6プラス (IPoE)</span>');
-        connect_status.v6 = true
-    }
-    v6.onerror = () => connect_status.v6 = false
-    v6.src = 'https://kiriwake4.jpne.co.jp/addr.cgi?q=img';
-    v6.style.display = 'none';
-    v6.id = 'v6plus'
-    $('#v6plus').remove();
-}
-
-async function ocn() {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    if (IPv4 !== undefined || IPv6 !== undefined) {
-        const response = await fetch('/api/get/ocn', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                ipv4: IPv4 || '',
-                ipv6: IPv6 || ''
-            })
-        });
-        const data = await response.json();
-
-        if (!data.IPv4) {
-            connect_status.ocnIpv4 = false
-            connect_status.ocn = false
-        }
-        else {
-            $('#connect-status-ipv4').html(data.IPv4);
-            connect_status.ocnIpv4 = true
-            connect_status.ocn = true
-        }
-        if (!data.ip) {
-            connect_status.ocnIPv6 = false
-            connect_status.ocn = false
-        }
-        else {
-            $('#connect-status-ipv6').html(data.ip);
-            connect_status.ocnIPv6 = true
-            connect_status.ocn = true
-        }
-    }
-    else connect_status.ocn = false
-}
-
 
 (async () => {
-    const access_ipv4 = '106.185.148.112'
-    const ipv4Promise = IPv4orIPv6_fetch(`http://${access_ipv4}:4545/api/get/ip`);
-    const ipv6Promise = IPv4orIPv6_fetch(`https://ipapi.co/json/`);
+    const GetIPv4 = IPfetch(`https://ipv4.iplocation.net/`);
+    const GetIPv6 = IPfetch(`https://ipapi.co/json/`);
 
-    ipv4Promise.then(ipv4Data => {
-        IPv4 = ipv4Data.IPv4
-        $('#ipv4-address').text(ipv4Data && ipv4Data.IPv4 ? ipv4Data.IPv4 : '-');
-        $('#ipv4-status').html(ipv4Data && ipv4Data.IPv4 ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
+    GetIPv4.then(ipv4Data => {
+        IPv4 = ipv4Data.ip
+        $('#ipv4-address').text(ipv4Data && ipv4Data.ip ? ipv4Data.ip : '-');
+        $('#ipv4-status').html(ipv4Data && ipv4Data.ip ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
     });
 
-    ipv6Promise.then(ipv6Data => {
+    GetIPv6.then(ipv6Data => {
         IPv6 = ipv6Data.ip
         $('#ipv6-address').text(ipv6Data && ipv6Data.ip ? ipv6Data.ip : '-');
         $('#ipv6-status').html(ipv6Data && ipv6Data.ip ? '<span class="text-success">〇</span>' : '<span class="text-danger">✕</span>');
     });
 
-    Promise.all([ipv4Promise, ipv6Promise]).then(results => {
+    Promise.all([GetIPv4, GetIPv6]).then(results => {
         const [ipv4Data, ipv6Data] = results;
-        ip = ipv4Data && ipv4Data.IPv4 ? ipv4Data.IPv4 : ipv6Data && ipv6Data.ip ? ipv6Data.ip : null;
+        ip = ipv4Data && ipv4Data.ip ? ipv4Data.ip : ipv6Data && ipv6Data.ip ? ipv6Data.ip : null;
         if(ip) info(ipv6Data)
         let infoText = '<span class="text-danger">取得できませんでした</span>';
-        if (ipv4Data && ipv4Data.IPv4 && ipv6Data && ipv6Data.ip) {
+        if (ipv4Data && ipv4Data.ip && ipv6Data && ipv6Data.ip) {
             infoText = '<span class="text-success">IPv4/IPv6の両方で通信しています</span>';
-        } else if (ipv4Data && ipv4Data.IPv4) {
+        } else if (ipv4Data && ipv4Data.ip) {
             infoText = '<span class="text-success">IPv4のみで通信しています</span>';
         } else if (ipv6Data && ipv6Data.ip) {
             infoText = '<span class="text-success">IPv6のみで通信しています</span>';
