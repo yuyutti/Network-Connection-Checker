@@ -16,12 +16,7 @@ async function getData(url, timeout = 1000) {
         const response = await fetch(url, { signal: controller.signal, mode: 'no-cors' });
         if (!response.ok) throw new Error('Network response was not ok');
 
-        // もしjson形式でない場合textで返す
-        try {
-            return await response.json();
-        } catch (error) {
-            return await response.text();
-        }
+        return await response.json();
     } catch (error) {
         return false;
     } finally {

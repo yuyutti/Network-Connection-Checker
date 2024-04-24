@@ -93,13 +93,13 @@ async function xpass() {
 }
 
 async function asahiNet() {
-    const res = await getData('https://v6.asahi-net.jp/', 2000);
+    // const res = await getData('https://v6.asahi-net.jp/', 2000);
 
-    if (res.status !== 200) return connect_status.asahiNet = false;
-    if (res.includes('ASAHIネット以外')) return connect_status.asahiNet = false;
-    $('#connect-status-ipv4').html('<span class="text-success">DS-Lite<br>(IPoE + IPv4 over IPv6)</span>');
-    $('#connect-status-ipv6').html('<span class="text-success">AsahiNet IPv6接続<br>(IPoE)</span>');
-    return connect_status.asahiNet = true;
+    // if (res.status !== 200) return connect_status.asahiNet = false;
+    // if (res.includes('ASAHIネット以外')) return connect_status.asahiNet = false;
+    // $('#connect-status-ipv4').html('<span class="text-success">DS-Lite<br>(IPoE + IPv4 over IPv6)</span>');
+    // $('#connect-status-ipv6').html('<span class="text-success">AsahiNet IPv6接続<br>(IPoE)</span>');
+    // return connect_status.asahiNet = true;
 }
 
 async function check() {
