@@ -106,7 +106,7 @@ async function asahiNet() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
     try {
-        const res = await fetch('https://v6.asahi-net.jp/', { signal: controller.signal });
+        const res = await fetch('https://v6.asahi-net.jp/', { signal: controller.signal, mode: 'no-cors' });
         if (!res.status === 200) return connect_status.asahiNet = null;
 
         // html内に「ASAHIネット以外」が含まれてるかどうか
