@@ -13,7 +13,7 @@ async function getData(url, timeout = 1000) {
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-        const response = await fetch(url, { signal: controller.signal, mode: 'no-cors' });
+        const response = await fetch(url, { signal: controller.signal });
         if (!response.ok) throw new Error('Network response was not ok');
 
         return await response.json();
